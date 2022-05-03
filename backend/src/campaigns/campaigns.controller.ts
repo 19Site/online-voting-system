@@ -43,8 +43,16 @@ export class CampaignsController {
 	}
 
 	@Get()
-	findAll() {
-		return this.campaignsService.findAll();
+	async findAll(): Promise<object> {
+
+		const campaigns: Campaign[] = await this.campaignsService.findAll();
+
+		return {
+
+			ok: true,
+
+			data: campaigns
+		};
 	}
 
 	@Get(':id')

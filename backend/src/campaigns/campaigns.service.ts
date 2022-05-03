@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
+import { IsNull } from 'typeorm';
+
 import { CreateCampaignDto } from './dto/create-campaign.dto';
 
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
@@ -30,8 +32,20 @@ export class CampaignsService {
 		return campaign;
 	}
 
-	findAll() {
-		return `This action returns all campaigns`;
+	/**
+	 * get all
+	 */
+	async findAll(): Promise<Campaign[]> {
+
+		const campaigns: Campaign[] = await Campaign.find({
+
+			where: {
+
+				deletedAt: IsNull()
+			}
+		});
+
+		return campaigns;
 	}
 
 	findOne(id: number) {
