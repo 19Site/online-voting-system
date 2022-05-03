@@ -1,4 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, Index } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, Index, OneToMany } from 'typeorm';
+
+import { CampaignOption } from '../../campaign-options/entities/campaign-option.entity';
+
+import { UserCampaignOption } from '../../users/entities/user-campaign-option.entity';
 
 @Entity({ name: 'campaigns' })
 export class Campaign extends BaseEntity {
@@ -31,4 +35,10 @@ export class Campaign extends BaseEntity {
     @Index()
     @Column({ name: 'deleted_at', nullable: true })
     deletedAt: Date;
+
+    @OneToMany(() => CampaignOption, campaignOption => campaignOption.campaign)
+    campaignOptions: CampaignOption[];
+
+    @OneToMany(() => UserCampaignOption, usersCampaignOption => usersCampaignOption.campaign)
+    usersCampaignOptions: CampaignOption[];
 }
