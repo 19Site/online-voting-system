@@ -6,9 +6,11 @@ import Link from 'next/link';
 
 import Axios from 'axios';
 
+import Layout from '../../components/layout';
+
 import { useEffect, useState } from 'react';
 
-export default function Home() {
+export default function Page() {
 
 	// campaigns
 	const [campaigns, setCampaigns] = useState([]);
@@ -51,7 +53,7 @@ export default function Home() {
 
 			<Head>
 
-				<title>Users - Online voting system</title>
+				<title>Campaigns - Online voting system</title>
 
 				<meta name='description' content='Online voting system' />
 			</Head>
@@ -62,19 +64,7 @@ export default function Home() {
 
 					<div className='h2'>
 
-						<Link
-
-							href={{
-
-								pathname: '/campaigns'
-							}}
-						>
-
-							<a className='text-decoration-none'>
-
-								Campaigns
-							</a>
-						</Link>
+						Campaigns
 					</div>
 				</div>
 			</div>
@@ -154,3 +144,11 @@ export default function Home() {
 		</div>
 	);
 }
+
+Page.getLayout = function getLayout(page) {
+
+	return (
+
+		<Layout>{page}</Layout>
+	);
+};

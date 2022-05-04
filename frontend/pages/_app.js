@@ -3,9 +3,13 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 import Head from 'next/head';
 
+import Layout from '../components/layout';
+
 function MyApp({ Component, pageProps }) {
 
-	return (
+	const getLayout = Component.getLayout || ((page) => page);
+
+	return getLayout(
 
 		<>
 

@@ -2,11 +2,15 @@ import Head from 'next/head';
 
 import Image from 'next/image';
 
+import Link from 'next/link';
+
 import Axios from 'axios';
 
 import { useEffect, useState } from 'react';
 
-export default function Home() {
+import Layout from '../../components/layout';
+
+export default function Page() {
 
 	// users
 	const [users, setUsers] = useState([]);
@@ -95,7 +99,19 @@ export default function Home() {
 
 											<th>
 
-												{user.id}
+												<Link
+
+													href={{
+
+														pathname: '/users/' + user.id
+													}}
+												>
+
+													<a className='text-decoration-none'>
+
+														{user.id}
+													</a>
+												</Link>
 											</th>
 
 											<th>
@@ -113,3 +129,11 @@ export default function Home() {
 		</div>
 	);
 }
+
+Page.getLayout = function getLayout(page) {
+
+	return (
+
+		<Layout>{page}</Layout>
+	);
+};

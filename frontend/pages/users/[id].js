@@ -20,8 +20,8 @@ export default function Page() {
 	// get id
 	const { id } = router.query;
 
-	// campaign
-	const [campaign, setCampaign] = useState(undefined);
+	// user
+	const [user, setUser] = useState(undefined);
 
 	// component did mount
 	useEffect(() => {
@@ -41,8 +41,8 @@ export default function Page() {
 	 */
 	const load = async () => {
 
-		// get campaign
-		const res = await Axios.get('/api/v1/campaigns/' + id);
+		// get user
+		const res = await Axios.get('/api/v1/users/' + id);
 
 		// data
 		const data = res.data;
@@ -53,11 +53,11 @@ export default function Page() {
 			return;
 		}
 
-		// get campaigns
-		const campaigns = data.data;
+		// get users
+		const users = data.data;
 
-		// update campaign
-		setCampaign(campaigns[0]);
+		// update user
+		setUser(users[0]);
 	};
 
 	/**
@@ -65,10 +65,10 @@ export default function Page() {
 	 */
 	const save = async () => {
 
-		// get campaign
-		const res = await Axios.patch('/api/v1/campaigns/' + id, {
+		// get user
+		const res = await Axios.patch('/api/v1/users/' + id, {
 
-			...campaign
+			...user
 		});
 
 		// data
@@ -89,8 +89,8 @@ export default function Page() {
 	 */
 	const remove = async () => {
 
-		// get campaign
-		const res = await Axios.delete('/api/v1/campaigns/' + id);
+		// get user
+		const res = await Axios.delete('/api/v1/users/' + id);
 
 		// data
 		const data = res.data;
@@ -104,7 +104,7 @@ export default function Page() {
 		// change page
 		router.replace({
 
-			pathname: '/campaigns'
+			pathname: '/users'
 		});
 	};
 
@@ -115,7 +115,7 @@ export default function Page() {
 
 			<Head>
 
-				<title>Campaign - Online voting system</title>
+				<title>User - Online voting system</title>
 
 				<meta name='description' content='Online voting system' />
 			</Head>
@@ -126,7 +126,7 @@ export default function Page() {
 
 					<div className='h2'>
 
-						Campaigns #{id}
+						Users #{id}
 					</div>
 				</div>
 			</div>
@@ -135,9 +135,9 @@ export default function Page() {
 
 				<div className='col'>
 
-					{ // campaign 
+					{ // user 
 
-						campaign ? (
+						user ? (
 
 							<>
 
@@ -145,7 +145,7 @@ export default function Page() {
 
 									<label className='form-label'>
 
-										Name
+										HKID
 									</label>
 
 									<input
@@ -154,7 +154,7 @@ export default function Page() {
 
 										type='text'
 
-										value={campaign.name || ''}
+										value={user.hkid || ''}
 
 										onChange={
 
@@ -162,43 +162,11 @@ export default function Page() {
 
 												const value = evt.target.value;
 
-												setCampaign({
+												setUser({
 
-													...campaign,
+													...user,
 
-													name: value
-												});
-											}
-										}
-									/>
-								</div>
-
-								<div className='mt-4'>
-
-									<label className='form-label'>
-
-										Description
-									</label>
-
-									<input
-
-										className='form-control'
-
-										type='text'
-
-										value={campaign.description || ''}
-
-										onChange={
-
-											evt => {
-
-												const value = evt.target.value;
-
-												setCampaign({
-
-													...campaign,
-
-													description: value
+													hkid: value
 												});
 											}
 										}
