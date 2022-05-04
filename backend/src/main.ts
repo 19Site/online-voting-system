@@ -1,3 +1,7 @@
+import { ValidatorOptions } from 'class-validator';
+
+import { ValidationError, ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
+
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
@@ -9,6 +13,22 @@ async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 
 	app.setGlobalPrefix('api/v1');
+
+	app.useGlobalPipes(
+
+		new ValidationPipe({
+
+			exceptionFactory: (validationErrors: ValidationError[] = []) => {
+
+				return new HttpException({
+
+					ok: false,
+
+					error: validationErrors.length > 0 && validationErrors[0].constraints && validationErrors[0].constraints.matches ? validationErrors[0].constraints.matches : 'bad request'
+				}, HttpStatus.OK);
+			},
+		})
+	);
 
 	const config = new DocumentBuilder()
 
