@@ -37,6 +37,8 @@ export class CampaignsService {
 
 		const campaigns: Campaign[] = await Campaign.find({
 
+			relations: ['campaignOptions'],
+
 			where: {
 
 			}
