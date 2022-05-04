@@ -109,7 +109,7 @@ export default function Page() {
 
 													<a className='text-decoration-none'>
 
-														{user.id}
+														#{user.id}
 													</a>
 												</Link>
 											</th>

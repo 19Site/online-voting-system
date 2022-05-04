@@ -119,7 +119,7 @@ export default function Page() {
 
 													<a className='text-decoration-none'>
 
-														{campaign.id}
+														#{campaign.id}
 													</a>
 												</Link>
 											</th>
