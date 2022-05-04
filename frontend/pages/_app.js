@@ -15,6 +15,10 @@ function MyApp({ Component, pageProps }) {
 
 			<Head>
 
+				<title>Online voting system</title>
+
+				<meta name='description' content='Online voting system' />
+
 				<meta name='viewport' content='width=device-width, initial-scale=1' />
 
 				<link rel='icon' href='/favicon.ico' />

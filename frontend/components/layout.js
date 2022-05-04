@@ -18,7 +18,24 @@ export default function Layout({ children }) {
 
                                 href={{
 
-                                    pathname: '/users'
+                                    pathname: '/'
+                                }}
+                            >
+
+                                <a className='text-decoration-none'>
+
+                                    Home
+                                </a>
+                            </Link>
+                        </div>
+
+                        <div className='py-3'>
+
+                            <Link
+
+                                href={{
+
+                                    pathname: '/admin/users'
                                 }}
                             >
 
@@ -35,7 +52,7 @@ export default function Layout({ children }) {
 
                                 href={{
 
-                                    pathname: '/campaigns'
+                                    pathname: '/admin/campaigns'
                                 }}
                             >
 
@@ -49,7 +66,7 @@ export default function Layout({ children }) {
 
                     <div className='col'>
 
-                        <div>{children}</div>
+                        <div className='pb-5'>{children}</div>
                     </div>
                 </div>
             </div>

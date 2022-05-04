@@ -8,7 +8,7 @@ import Axios from 'axios';
 
 import { useEffect, useState } from 'react';
 
-import Layout from '../../components/layout';
+import Layout from '../../../components/layout';
 
 export default function Page() {
 
@@ -103,7 +103,7 @@ export default function Page() {
 
 													href={{
 
-														pathname: '/users/' + user.id
+														pathname: '/admin/users/' + user.id
 													}}
 												>
 

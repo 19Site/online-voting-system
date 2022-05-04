@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 
 import { useRouter } from 'next/router'
 
-import Layout from '../../components/layout';
+import Layout from '../../../components/layout';
 
 import Swal from 'sweetalert2';
 
@@ -114,7 +114,7 @@ export default function Page() {
 		// change page
 		router.replace({
 
-			pathname: '/users'
+			pathname: '/admin/users'
 		});
 	};
 

@@ -8,11 +8,13 @@ import Axios from 'axios';
 
 import Swal from 'sweetalert2';
 
+import Moment from 'moment';
+
 import { useEffect, useState } from 'react';
 
 import { useRouter } from 'next/router'
 
-import Layout from '../../components/layout';
+import Layout from '../../../components/layout';
 
 export default function Page() {
 
@@ -36,12 +38,23 @@ export default function Page() {
 
 		// load data
 		load();
-	}, [router.isReady]);
+	}, [router.isReady, id]);
 
 	/**
 	 * load
 	 */
 	const load = async () => {
+
+		// new campaign
+		if (id === 'new') {
+
+			return setCampaign({
+
+				startAt: Moment().format('YYYY-MM-DD') + ' 00:00:00',
+
+				endAt: Moment().add(7, 'days').format('YYYY-MM-DD') + ' 23:59:59'
+			});
+		}
 
 		// get campaign
 		const res = await Axios.get('/api/v1/campaigns/' + id);
@@ -58,8 +71,18 @@ export default function Page() {
 		// get campaigns
 		const campaigns = data.data;
 
+		// first campaign
+		const campaign = campaigns[0];
+
 		// update campaign
-		setCampaign(campaigns[0]);
+		setCampaign({
+
+			...campaign,
+
+			startAt: Moment(campaign.startAt).isValid() ? Moment(campaign.startAt).format('YYYY-MM-DD HH:mm:ss') : undefined,
+
+			endAt: Moment(campaign.endAt).isValid() ? Moment(campaign.endAt).format('YYYY-MM-DD HH:mm:ss') : undefined
+		});
 	};
 
 	/**
@@ -72,11 +95,28 @@ export default function Page() {
 
 		{ // campaign
 
-			// get campaign
-			const res = await Axios.patch('/api/v1/campaigns/' + id, {
+			// res
+			let res = undefined;
 
-				...campaign
-			});
+			// update
+			if (id !== 'new') {
+
+				// update campaign
+				res = await Axios.patch('/api/v1/campaigns/' + id, {
+
+					...campaign
+				});
+			}
+
+			// new
+			else {
+
+				// new campaign
+				res = await Axios.post('/api/v1/campaigns', {
+
+					...campaign
+				});
+			}
 
 			// data
 			const data = res.data;
@@ -149,8 +189,11 @@ export default function Page() {
 			}
 		}
 
-		// load data
-		load();
+		// redirect
+		router.replace({
+
+			pathname: '/admin/campaigns/' + campaignId
+		});
 	};
 
 	/**
@@ -181,7 +224,7 @@ export default function Page() {
 		// change page
 		router.replace({
 
-			pathname: '/campaigns'
+			pathname: '/admin/campaigns'
 		});
 	};
 
@@ -326,6 +369,70 @@ export default function Page() {
 									/>
 								</div>
 
+								<div className='mt-4'>
+
+									<label className='form-label'>
+
+										Start at
+									</label>
+
+									<input
+
+										className='form-control'
+
+										type='text'
+
+										value={campaign.startAt || ''}
+
+										onChange={
+
+											evt => {
+
+												const value = evt.target.value;
+
+												setCampaign({
+
+													...campaign,
+
+													startAt: value
+												});
+											}
+										}
+									/>
+								</div>
+
+								<div className='mt-4'>
+
+									<label className='form-label'>
+
+										End at
+									</label>
+
+									<input
+
+										className='form-control'
+
+										type='text'
+
+										value={campaign.endAt || ''}
+
+										onChange={
+
+											evt => {
+
+												const value = evt.target.value;
+
+												setCampaign({
+
+													...campaign,
+
+													endAt: value
+												});
+											}
+										}
+									/>
+								</div>
+
 								{ // campaign options
 
 									campaign.campaignOptions ? campaign.campaignOptions.map((campaignOption, i) => {
@@ -413,15 +520,21 @@ export default function Page() {
 										Save
 									</button>
 
-									<button
+									{ // delete
 
-										className='btn btn-danger ms-4'
+										campaign.id ? (
 
-										onClick={evt => remove()}
-									>
+											<button
 
-										Remove
-									</button>
+												className='btn btn-danger ms-4'
+
+												onClick={evt => remove()}
+											>
+
+												Remove
+											</button>
+										) : undefined
+									}
 
 									<button
 
@@ -431,7 +544,7 @@ export default function Page() {
 
 											...campaign,
 
-											campaignOptions: [...campaign.campaignOptions, {}]
+											campaignOptions: [...(campaign.campaignOptions || []), {}]
 										})}
 									>
 

@@ -4,11 +4,9 @@ import Image from 'next/image';
 
 import Link from 'next/link';
 
-import Axios from 'axios';
-
-import Layout from '../../components/layout';
-
 import { useEffect, useState } from 'react';
+
+import Axios from 'axios';
 
 export default function Page() {
 
@@ -51,104 +49,52 @@ export default function Page() {
 
 		<div className='container'>
 
-			<Head>
-
-				<title>Campaigns - Online voting system</title>
-
-				<meta name='description' content='Online voting system' />
-			</Head>
-
-			<div className='row mt-3'>
+			<div className='row mt-4'>
 
 				<div className='col'>
 
-					<div className='h2'>
+					<div className='h3'>
 
 						Campaigns
 					</div>
-				</div>
-			</div>
 
-			<div className='row mt-3'>
+					{ // campaigns
 
-				<div className='col'>
+						campaigns.length > 0 ? campaigns.map((campaign, i) => {
 
-					<table className='table'>
+							// return
+							return (
 
-						<thead>
+								<div key={'campaign-index-' + i}>
 
-							<tr>
+									<div className='mt-4'>
 
-								<th>
+										<Link
 
-									Id
-								</th>
+											href={{
 
-								<th>
+												pathname: '/campaigns/' + campaign.id
+											}}
+										>
 
-									Name
-								</th>
+											<a className='text-decoration-none'>
 
-								<th>
+												Voting Campaign {i + 1} : {campaign.name}
+											</a>
+										</Link>
+									</div>
+								</div>
+							);
+						}) : (
 
-									Description
-								</th>
-							</tr>
-						</thead>
+							<div className='py-5 text-center'>
 
-						<tbody>
-
-							{ // campaigns
-
-								campaigns.map((campaign, i) => {
-
-									// render
-									return (
-
-										<tr key={'campaigns-i-' + i}>
-
-											<th>
-
-												<Link
-
-													href={{
-
-														pathname: '/campaigns/' + campaign.id
-													}}
-												>
-
-													<a className='text-decoration-none'>
-
-														#{campaign.id}
-													</a>
-												</Link>
-											</th>
-
-											<th>
-
-												{campaign.name || '---'}
-											</th>
-
-											<th>
-
-												{campaign.description || '---'}
-											</th>
-										</tr>
-									);
-								})
-							}
-						</tbody>
-					</table>
+								no data
+							</div>
+						)
+					}
 				</div>
 			</div>
 		</div>
 	);
 }
-
-Page.getLayout = function getLayout(page) {
-
-	return (
-
-		<Layout>{page}</Layout>
-	);
-};
