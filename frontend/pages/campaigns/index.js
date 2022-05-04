@@ -39,7 +39,7 @@ export default function Page() {
 		}
 
 		// no session
-		if (!R.session.userId) {
+		if (!R.session.accessToken) {
 
 			// exit
 			router.replace({
@@ -88,13 +88,19 @@ export default function Page() {
 	const doVote = async (optionId) => {
 
 		// user id
-		const { userId } = R.session;
+		const { accessToken } = R.session;
 
 		// get campaigns
-		const res = await Axios.get('/api/v1/actions/do-vote?' + Qs.stringify({
+		const res = await Axios.post('/api/v1/actions/do-vote', {
 
-			votable: 1
-		}));
+			optionId: optionId
+		}, {
+
+			headers: {
+
+				Authorization: 'Bearer ' + accessToken
+			}
+		});
 
 		// data
 		const data = res.data;

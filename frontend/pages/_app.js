@@ -13,7 +13,11 @@ function MyApp({ Component, pageProps }) {
 	// session
 	const [session, setSession] = useState({
 
-		userId: undefined
+		// access token
+		accessToken: undefined,
+
+		// refresh token
+		refreshToken: undefined
 	});
 
 	// get layout

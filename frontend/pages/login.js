@@ -51,15 +51,17 @@ export default function Page() {
 			});
 		}
 
-		// get user
-		const user = data.user;
+		// get tokens
+		const { accessToken, refreshToken } = data;
 
 		// set session
 		R.setSession({
 
 			...R.session,
 
-			userId: user.id
+			accessToken: accessToken,
+
+			refreshToken: refreshToken
 		});
 
 		// redirect
