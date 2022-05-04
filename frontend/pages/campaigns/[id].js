@@ -67,27 +67,86 @@ export default function Page() {
 	 */
 	const save = async () => {
 
-		// get campaign
-		const res = await Axios.patch('/api/v1/campaigns/' + id, {
+		// campaign id
+		let campaignId = undefined;
 
-			...campaign
-		});
+		{ // campaign
 
-		// data
-		const data = res.data;
+			// get campaign
+			const res = await Axios.patch('/api/v1/campaigns/' + id, {
 
-		// error
-		if (!data.ok) {
+				...campaign
+			});
+
+			// data
+			const data = res.data;
 
 			// error
-			return Swal.fire({
+			if (!data.ok) {
 
-				icon: 'error',
+				// error
+				return Swal.fire({
 
-				title: 'Error',
+					icon: 'error',
 
-				text: data.error
-			});
+					title: 'Error',
+
+					text: data.error
+				});
+			}
+
+			// campaign id
+			campaignId = data.id;
+		}
+
+		{ // campaign options
+
+			const options = campaign.campaignOptions || [];
+
+			for (const option of options) {
+
+				// res
+				let res = undefined;
+
+				// update
+				if (option.id) {
+
+					// get campaign
+					res = await Axios.patch('/api/v1/campaign-options/' + option.id, {
+
+						...option
+					});
+				}
+
+				// create
+				else {
+
+					// get campaign
+					res = await Axios.post('/api/v1/campaign-options', {
+
+						...option,
+
+						campaign_id: campaignId
+					});
+				}
+
+				// data
+				const data = res.data;
+
+				// error
+				if (!data.ok) {
+
+					// error
+					return Swal.fire({
+
+						icon: 'error',
+
+						title: 'Error',
+
+						text: data.error
+					});
+				}
+			}
 		}
 
 		// load data
@@ -125,6 +184,50 @@ export default function Page() {
 			pathname: '/campaigns'
 		});
 	};
+
+	/**
+	 * remove campaign option
+	 */
+	const removeCampaignOption = async index => {
+
+		// get option
+		const option = campaign.campaignOptions[index];
+
+		// new option
+		if (!option.id) {
+
+			// remove from memory
+			return setCampaign({
+
+				...campaign,
+
+				campaignOptions: campaign.campaignOptions.filter((m, i) => i !== index)
+			})
+		}
+
+		// get campaign
+		const res = await Axios.delete('/api/v1/campaign-options/' + option.id);
+
+		// data
+		const data = res.data;
+
+		// error
+		if (!data.ok) {
+
+			// error
+			return Swal.fire({
+
+				icon: 'error',
+
+				title: 'Error',
+
+				text: data.error
+			});
+		}
+
+		// load data
+		load();
+	}
 
 	// render
 	return (
@@ -287,7 +390,7 @@ export default function Page() {
 
 														className='btn btn-danger'
 
-														onClick={evt => save()}
+														onClick={evt => removeCampaignOption(i)}
 													>
 
 														Remove option
@@ -318,6 +421,21 @@ export default function Page() {
 									>
 
 										Remove
+									</button>
+
+									<button
+
+										className='btn btn-primary ms-4'
+
+										onClick={evt => setCampaign({
+
+											...campaign,
+
+											campaignOptions: [...campaign.campaignOptions, {}]
+										})}
+									>
+
+										Add option
 									</button>
 								</div>
 							</>
