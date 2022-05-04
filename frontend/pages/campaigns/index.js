@@ -2,6 +2,8 @@ import Head from 'next/head';
 
 import Image from 'next/image';
 
+import Link from 'next/link';
+
 import Axios from 'axios';
 
 import { useEffect, useState } from 'react';
@@ -14,28 +16,33 @@ export default function Home() {
 	// component did mount
 	useEffect(() => {
 
-		// async wrapper
-		(async () => {
-
-			// get campaigns
-			const res = await Axios.get('/api/v1/campaigns');
-
-			// data
-			const data = res.data;
-
-			// error
-			if (!data.ok) {
-
-				return;
-			}
-
-			// get campaigns
-			const campaigns = data.data;
-
-			// update campaigns
-			setCampaigns(campaigns);
-		})();
+		// load data
+		load();
 	}, []);
+
+	/**
+	 * load
+	 */
+	const load = async () => {
+
+		// get campaigns
+		const res = await Axios.get('/api/v1/campaigns');
+
+		// data
+		const data = res.data;
+
+		// error
+		if (!data.ok) {
+
+			return;
+		}
+
+		// get campaigns
+		const campaigns = data.data;
+
+		// update campaigns
+		setCampaigns(campaigns);
+	};
 
 	// render
 	return (
@@ -55,7 +62,19 @@ export default function Home() {
 
 					<div className='h2'>
 
-						Campaigns
+						<Link
+
+							href={{
+
+								pathname: '/campaigns'
+							}}
+						>
+
+							<a className='text-decoration-none'>
+
+								Campaigns
+							</a>
+						</Link>
 					</div>
 				</div>
 			</div>
@@ -100,17 +119,29 @@ export default function Home() {
 
 											<th>
 
-												{campaign.id}
+												<Link
+
+													href={{
+
+														pathname: '/campaigns/' + campaign.id
+													}}
+												>
+
+													<a className='text-decoration-none'>
+
+														{campaign.id}
+													</a>
+												</Link>
 											</th>
 
 											<th>
 
-												{campaign.name}
+												{campaign.name || '---'}
 											</th>
 
 											<th>
 
-												{campaign.description}
+												{campaign.description || '---'}
 											</th>
 										</tr>
 									);
