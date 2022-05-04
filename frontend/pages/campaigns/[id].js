@@ -6,6 +6,8 @@ import Link from 'next/link';
 
 import Axios from 'axios';
 
+import Swal from 'sweetalert2';
+
 import { useEffect, useState } from 'react';
 
 import { useRouter } from 'next/router'
@@ -220,6 +222,81 @@ export default function Page() {
 										}
 									/>
 								</div>
+
+								{ // campaign options
+
+									campaign.campaignOptions ? campaign.campaignOptions.map((campaignOption, i) => {
+
+										return (
+
+											<div
+
+												key={'campaign-options-i-' + i}
+
+												className='mt-4'
+											>
+
+												<label className='form-label'>
+
+													Option #{i + 1}
+												</label>
+
+												<div className='input-group'>
+
+													<input
+
+														className='form-control'
+
+														type='text'
+
+														value={campaignOption.name || ''}
+
+														onChange={
+
+															evt => {
+
+																const value = evt.target.value;
+
+																setCampaign({
+
+																	...campaign,
+
+																	campaignOptions: campaign.campaignOptions.map((m, i2) => {
+
+																		if (i === i2) {
+
+																			return {
+
+																				...m,
+
+																				name: value
+																			};
+																		}
+
+																		else {
+
+																			return m;
+																		}
+																	})
+																});
+															}
+														}
+													/>
+
+													<button
+
+														className='btn btn-danger'
+
+														onClick={evt => save()}
+													>
+
+														Remove option
+													</button>
+												</div>
+											</div>
+										);
+									}) : undefined
+								}
 
 								<div className='mt-4'>
 
