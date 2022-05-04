@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { IsNull } from 'typeorm';
+import { IsNull, LessThan, MoreThan } from 'typeorm';
 
 import { CreateCampaignDto } from './dto/create-campaign.dto';
 
@@ -41,6 +41,26 @@ export class CampaignsService {
 
 			where: {
 
+			}
+		});
+
+		return campaigns;
+	}
+
+	/**
+	 * get all votable
+	 */
+	async findAllVotable(): Promise<Campaign[]> {
+
+		const campaigns: Campaign[] = await Campaign.find({
+
+			relations: ['campaignOptions'],
+
+			where: {
+
+				startAt: LessThan(new Date()),
+
+				endAt: MoreThan(new Date())
 			}
 		});
 

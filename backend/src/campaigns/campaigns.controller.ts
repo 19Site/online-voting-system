@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, HttpException, HttpStatus, Query } from '@nestjs/common';
 
 import { CampaignsService } from './campaigns.service';
 
@@ -7,6 +7,8 @@ import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
 
 import { Campaign } from './entities/campaign.entity';
+
+import Moment from 'moment';
 
 @Controller('campaigns')
 export class CampaignsController {
@@ -44,10 +46,24 @@ export class CampaignsController {
 	}
 
 	@Get()
-	async findAll(): Promise<object> {
+	async findAll(@Query('votable') votable: String): Promise<object> {
 
-		const campaigns: Campaign[] = await this.campaignsService.findAll();
+		// result container
+		let campaigns: Campaign[] = [];
 
+		// get votable
+		if (+votable === 1) {
+
+			campaigns = await this.campaignsService.findAllVotable();
+		}
+
+		// get all
+		else {
+
+			campaigns = await this.campaignsService.findAll();
+		}
+
+		// return
 		return {
 
 			ok: true,
