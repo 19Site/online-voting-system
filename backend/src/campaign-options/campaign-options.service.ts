@@ -1,26 +1,114 @@
 import { Injectable } from '@nestjs/common';
+
+import { IsNull } from 'typeorm';
+
 import { CreateCampaignOptionDto } from './dto/create-campaign-option.dto';
+
 import { UpdateCampaignOptionDto } from './dto/update-campaign-option.dto';
+
+import { CampaignOption } from './entities/campaign-option.entity';
 
 @Injectable()
 export class CampaignOptionsService {
-  create(createCampaignOptionDto: CreateCampaignOptionDto) {
-    return 'This action adds a new campaignOption';
-  }
 
-  findAll() {
-    return `This action returns all campaignOptions`;
-  }
+	/**
+	 * create
+	 */
+	async create(createCampaignOptionDto: CreateCampaignOptionDto): Promise<CampaignOption> {
 
-  findOne(id: number) {
-    return `This action returns a #${id} campaignOption`;
-  }
+		const campaignOption: CampaignOption = new CampaignOption();
 
-  update(id: number, updateCampaignOptionDto: UpdateCampaignOptionDto) {
-    return `This action updates a #${id} campaignOption`;
-  }
+		Object.assign(campaignOption, {
 
-  remove(id: number) {
-    return `This action removes a #${id} campaignOption`;
-  }
+			...createCampaignOptionDto,
+
+			createdAt: new Date(),
+
+			updatedAt: new Date()
+		});
+
+		await campaignOption.save();
+
+		return campaignOption;
+	}
+
+	/**
+	 * get all
+	 */
+	async findAll(): Promise<CampaignOption[]> {
+
+		const campaignOptions: CampaignOption[] = await CampaignOption.find({
+
+			where: {
+
+				deletedAt: IsNull()
+			}
+		});
+
+		return campaignOptions;
+	}
+
+	/**
+	 * get one
+	 */
+	async findOne(id: number): Promise<CampaignOption> {
+
+		const campaignOption: CampaignOption = await CampaignOption.findOne({
+
+			where: {
+
+				id: id,
+
+				deletedAt: IsNull()
+			}
+		});
+
+		return campaignOption;
+	}
+
+	/**
+	 * update
+	 */
+	async update(id: number, updateCampaignOptionDto: UpdateCampaignOptionDto): Promise<CampaignOption> {
+
+		const campaignOption: CampaignOption = await this.findOne(id);
+
+		if (typeof campaignOption === 'undefined') {
+
+			throw new Error('campaign option not found');
+		}
+
+		Object.assign(campaignOption, {
+
+			...updateCampaignOptionDto,
+
+			updatedAt: new Date()
+		});
+
+		await campaignOption.save();
+
+		return campaignOption;
+	}
+
+	/**
+	 * delete
+	 */
+	async remove(id: number): Promise<CampaignOption> {
+
+		const campaignOption: CampaignOption = await this.findOne(id);
+
+		if (typeof campaignOption === 'undefined') {
+
+			throw new Error('campaign option not found');
+		}
+
+		Object.assign(campaignOption, {
+
+			deletedAt: new Date()
+		});
+
+		await campaignOption.save();
+
+		return campaignOption;
+	}
 }
