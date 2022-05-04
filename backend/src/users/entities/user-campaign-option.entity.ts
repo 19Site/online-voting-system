@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, Index, ManyToOne, JoinColumn, Unique } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, Index, ManyToOne, JoinColumn, Unique, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 
 import { Campaign } from '../../campaigns/entities/campaign.entity';
 
@@ -26,15 +26,15 @@ export class UserCampaignOption extends BaseEntity {
 	campaign_option_id: number;
 
 	@Index()
-	@Column({ name: 'created_at', nullable: true })
+	@CreateDateColumn({ name: 'created_at', nullable: true })
 	createdAt: Date;
 
 	@Index()
-	@Column({ name: 'updated_at', nullable: true })
+	@UpdateDateColumn({ name: 'updated_at', nullable: true })
 	updatedAt: Date;
 
 	@Index()
-	@Column({ name: 'deleted_at', nullable: true })
+	@DeleteDateColumn({ name: 'deleted_at', nullable: true })
 	deletedAt: Date;
 
 	@ManyToOne(() => User, user => user.usersCampaignOptions)

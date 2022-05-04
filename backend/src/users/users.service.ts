@@ -33,11 +33,7 @@ export class UsersService {
 
 		Object.assign(user, {
 
-			...createUserDto,
-
-			createdAt: new Date(),
-
-			updatedAt: new Date()
+			...createUserDto
 		});
 
 		await user.save();
@@ -54,7 +50,6 @@ export class UsersService {
 
 			where: {
 
-				deletedAt: IsNull()
 			}
 		});
 
@@ -70,9 +65,7 @@ export class UsersService {
 
 			where: {
 
-				id: id,
-
-				deletedAt: IsNull()
+				id: id
 			}
 		});
 
@@ -93,9 +86,7 @@ export class UsersService {
 
 		Object.assign(user, {
 
-			...updateUserDto,
-
-			updatedAt: new Date()
+			...updateUserDto
 		});
 
 		await user.save();
@@ -115,12 +106,7 @@ export class UsersService {
 			throw new Error('user not found');
 		}
 
-		Object.assign(user, {
-
-			deletedAt: new Date()
-		});
-
-		await user.save();
+		await user.softRemove();
 
 		return user;
 	}

@@ -22,11 +22,7 @@ export class CampaignsService {
 
 		Object.assign(campaign, {
 
-			...createCampaignDto,
-
-			createdAt: new Date(),
-
-			updatedAt: new Date()
+			...createCampaignDto
 		});
 
 		await campaign.save();
@@ -43,7 +39,6 @@ export class CampaignsService {
 
 			where: {
 
-				deletedAt: IsNull()
 			}
 		});
 
@@ -57,22 +52,11 @@ export class CampaignsService {
 
 		const campaign: Campaign = await Campaign.findOne({
 
-			where: {
-
-				id: id,
-
-				deletedAt: IsNull()
-			}
-		});
-
-		// get campaign options
-		campaign.campaignOptions = await CampaignOption.find({
+			relations: ['campaignOptions'],
 
 			where: {
 
-				campaign_id: campaign.id,
-
-				deletedAt: IsNull()
+				id: id
 			}
 		});
 
@@ -93,9 +77,7 @@ export class CampaignsService {
 
 		Object.assign(campaign, {
 
-			...updateCampaignDto,
-
-			updatedAt: new Date()
+			...updateCampaignDto
 		});
 
 		await campaign.save();
@@ -115,12 +97,7 @@ export class CampaignsService {
 			throw new Error('campaign not found');
 		}
 
-		Object.assign(campaign, {
-
-			deletedAt: new Date()
-		});
-
-		await campaign.save();
+		await campaign.softRemove();
 
 		return campaign;
 	}

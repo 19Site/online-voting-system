@@ -20,11 +20,7 @@ export class CampaignOptionsService {
 
 		Object.assign(campaignOption, {
 
-			...createCampaignOptionDto,
-
-			createdAt: new Date(),
-
-			updatedAt: new Date()
+			...createCampaignOptionDto
 		});
 
 		await campaignOption.save();
@@ -41,7 +37,6 @@ export class CampaignOptionsService {
 
 			where: {
 
-				deletedAt: IsNull()
 			}
 		});
 
@@ -57,9 +52,7 @@ export class CampaignOptionsService {
 
 			where: {
 
-				id: id,
-
-				deletedAt: IsNull()
+				id: id
 			}
 		});
 
@@ -80,9 +73,7 @@ export class CampaignOptionsService {
 
 		Object.assign(campaignOption, {
 
-			...updateCampaignOptionDto,
-
-			updatedAt: new Date()
+			...updateCampaignOptionDto
 		});
 
 		await campaignOption.save();
@@ -102,12 +93,7 @@ export class CampaignOptionsService {
 			throw new Error('campaign option not found');
 		}
 
-		Object.assign(campaignOption, {
-
-			deletedAt: new Date()
-		});
-
-		await campaignOption.save();
+		await campaignOption.softRemove();
 
 		return campaignOption;
 	}
