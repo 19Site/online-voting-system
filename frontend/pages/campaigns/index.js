@@ -60,11 +60,20 @@ export default function Page() {
 	 */
 	const load = async () => {
 
+		// user id
+		const { accessToken } = R.session;
+
 		// get campaigns
 		const res = await Axios.get('/api/v1/campaigns?' + Qs.stringify({
 
 			votable: 1
-		}));
+		}), {
+
+			headers: {
+
+				Authorization: 'Bearer ' + accessToken
+			}
+		});
 
 		// data
 		const data = res.data;
@@ -108,14 +117,19 @@ export default function Page() {
 		// error
 		if (!data.ok) {
 
-			return;
+			// error
+			return Swal.fire({
+
+				icon: 'error',
+
+				title: 'Error',
+
+				text: data.error
+			});
 		}
 
-		// get campaigns
-		const campaigns = data.data;
-
-		// update campaigns
-		setCampaigns(campaigns);
+		// load data
+		load();
 	};
 
 	// render
@@ -141,6 +155,9 @@ export default function Page() {
 
 							// end at
 							const endAt = Moment(campaign.endAt).isValid() ? Moment(campaign.endAt).format('LLL') : '---';
+
+							// voted
+							const voted = campaign.campaignOptions.reduce((a, b) => a === 1 ? a : (b.hasMe === 1 ? 1 : 0), 0);
 
 							// return
 							return (
@@ -188,19 +205,40 @@ export default function Page() {
 
 															<div>
 
-																<button
+																{ // voted
 
-																	className='btn btn-primary btn-sm'
+																	voted ? undefined : (
 
-																	onClick={evt => doVote(option.id)}
-																>
+																		<button
 
-																	Vote this
-																</button>
+																			className='btn btn-primary btn-sm me-3'
 
-																<span className='ms-3'>
+																			onClick={evt => doVote(option.id)}
+																		>
+
+																			Vote this
+																		</button>
+																	)
+																}
+
+																<span className=''>
 
 																	{i2 + 1}. {option.name}
+																</span>
+
+																<span className='ms-5'>
+
+																	Vote : {option.voteCount}
+
+																	{ // me vote
+																		option.hasMe === 1 ? (
+
+																			<span className='ms-5'>
+
+																				(You voted)
+																			</span>
+																		) : undefined
+																	}
 																</span>
 															</div>
 														</div>
