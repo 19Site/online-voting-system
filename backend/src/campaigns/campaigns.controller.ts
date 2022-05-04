@@ -56,17 +56,68 @@ export class CampaignsController {
 	}
 
 	@Get(':id')
-	findOne(@Param('id') id: string) {
-		return this.campaignsService.findOne(+id);
+	async findOne(@Param('id') id: string): Promise<object> {
+
+		const campaign: Campaign = await this.campaignsService.findOne(+id);
+
+		return {
+
+			ok: true,
+
+			data: campaign ? [campaign] : []
+		};
 	}
 
 	@Patch(':id')
-	update(@Param('id') id: string, @Body() updateCampaignDto: UpdateCampaignDto) {
-		return this.campaignsService.update(+id, updateCampaignDto);
+	@UsePipes(new ValidationPipe({ transform: true }))
+	async update(@Param('id') id: string, @Body() updateCampaignDto: UpdateCampaignDto): Promise<object> {
+
+		try {
+
+			const campaign: Campaign = await this.campaignsService.update(+id, updateCampaignDto);
+
+			return {
+
+				ok: true,
+
+				id: campaign.id
+			};
+		}
+
+		catch (err) {
+
+			throw new HttpException({
+
+				ok: false,
+
+				error: err.message
+			}, HttpStatus.OK);
+		}
 	}
 
 	@Delete(':id')
-	remove(@Param('id') id: string) {
-		return this.campaignsService.remove(+id);
+	async remove(@Param('id') id: string): Promise<object> {
+
+		try {
+
+			const campaign: Campaign = await this.campaignsService.remove(+id);
+
+			return {
+
+				ok: true,
+
+				id: campaign.id
+			};
+		}
+
+		catch (err) {
+
+			throw new HttpException({
+
+				ok: false,
+
+				error: err.message
+			}, HttpStatus.OK);
+		}
 	}
 }

@@ -48,15 +48,67 @@ export class CampaignsService {
 		return campaigns;
 	}
 
-	findOne(id: number) {
-		return `This action returns a #${id} campaign`;
+	/**
+	 * get one
+	 */
+	async findOne(id: number): Promise<Campaign> {
+
+		const campaign: Campaign = await Campaign.findOne({
+
+			where: {
+
+				id: id,
+
+				deletedAt: IsNull()
+			}
+		});
+
+		return campaign;
 	}
 
-	update(id: number, updateCampaignDto: UpdateCampaignDto) {
-		return `This action updates a #${id} campaign`;
+	/**
+	 * update
+	 */
+	async update(id: number, updateCampaignDto: UpdateCampaignDto): Promise<Campaign> {
+
+		const campaign: Campaign = await this.findOne(id);
+
+		if (typeof campaign === 'undefined') {
+
+			throw new Error('campaign not found');
+		}
+
+		Object.assign(campaign, {
+
+			...updateCampaignDto,
+
+			updatedAt: new Date()
+		});
+
+		await campaign.save();
+
+		return campaign;
 	}
 
-	remove(id: number) {
-		return `This action removes a #${id} campaign`;
+	/**
+	 * delete
+	 */
+	async remove(id: number): Promise<Campaign> {
+
+		const campaign: Campaign = await this.findOne(id);
+
+		if (typeof campaign === 'undefined') {
+
+			throw new Error('campaign not found');
+		}
+
+		Object.assign(campaign, {
+
+			deletedAt: new Date()
+		});
+
+		await campaign.save();
+
+		return campaign;
 	}
 }
