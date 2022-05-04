@@ -77,7 +77,15 @@ export default function Page() {
 		// error
 		if (!data.ok) {
 
-			return;
+			// error
+			return Swal.fire({
+
+				icon: 'error',
+
+				title: 'Error',
+
+				text: data.error
+			});
 		}
 
 		// load data
@@ -98,7 +106,15 @@ export default function Page() {
 		// error
 		if (!data.ok) {
 
-			return;
+			// error
+			return Swal.fire({
+
+				icon: 'error',
+
+				title: 'Error',
+
+				text: data.error
+			});
 		}
 
 		// change page

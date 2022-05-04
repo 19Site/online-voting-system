@@ -12,6 +12,8 @@ import { useRouter } from 'next/router'
 
 import Layout from '../../components/layout';
 
+import Swal from 'sweetalert2';
+
 export default function Page() {
 
 	// use router
@@ -77,7 +79,15 @@ export default function Page() {
 		// error
 		if (!data.ok) {
 
-			return;
+			// error
+			return Swal.fire({
+
+				icon: 'error',
+
+				title: 'Error',
+
+				text: data.error
+			});
 		}
 
 		// load data
