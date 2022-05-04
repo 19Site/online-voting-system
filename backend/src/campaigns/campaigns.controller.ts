@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, HttpException, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, HttpException, HttpStatus, Query, Headers } from '@nestjs/common';
 
 import { CampaignsService } from './campaigns.service';
 
@@ -46,7 +46,7 @@ export class CampaignsController {
 	}
 
 	@Get()
-	async findAll(@Query('votable') votable: String): Promise<object> {
+	async findAll(@Query('votable') votable: String, @Headers('Authorization') token: string): Promise<object> {
 
 		// result container
 		let campaigns: Campaign[] = [];
@@ -54,7 +54,7 @@ export class CampaignsController {
 		// get votable
 		if (+votable === 1) {
 
-			campaigns = await this.campaignsService.findAllVotable();
+			campaigns = await this.campaignsService.findAllVotable(token);
 		}
 
 		// get all

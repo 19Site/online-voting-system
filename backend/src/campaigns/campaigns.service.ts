@@ -10,8 +10,17 @@ import { Campaign } from './entities/campaign.entity';
 
 import { CampaignOption } from '../campaign-options/entities/campaign-option.entity';
 
+import { ConfigService } from '@nestjs/config';
+
+import * as Jwt from 'jsonwebtoken';
+
 @Injectable()
 export class CampaignsService {
+
+	/**
+	 * constructor 
+	 */
+	constructor(private configService: ConfigService) { }
 
 	/**
 	 * create
@@ -50,7 +59,13 @@ export class CampaignsService {
 	/**
 	 * get all votable
 	 */
-	async findAllVotable(): Promise<Campaign[]> {
+	async findAllVotable(token: string): Promise<Campaign[]> {
+
+		// get token data
+		const tokenJson = Jwt.verify(token.replace(/^Bearer /, ''), this.configService.get<string>('JWT_SECRET'));
+
+		// user id
+		const { id } = tokenJson as any;
 
 		const campaigns: Campaign[] = await Campaign.find({
 
@@ -61,6 +76,43 @@ export class CampaignsService {
 				startAt: LessThan(new Date()),
 
 				endAt: MoreThan(new Date())
+			}
+		});
+
+		const coll: any[] = [];
+
+		campaigns.forEach(campaign => {
+
+			campaign.campaignOptions.forEach(option => coll.push(option))
+		});
+
+		const rawData: any[] = await Campaign.query(`
+			select
+				count(id) as count,
+				a.campaign_option_id,
+				sum(if(a.user_id = ?,1,0)) as has_me
+			from
+				users_campaign_options a
+			where
+				a.campaign_option_id in (?) and
+				a.deleted_at is null
+			group by
+				a.campaign_option_id
+		`, [id, coll.map(m => m.id)]);
+
+		coll.forEach(col => {
+
+			col.voteCount = 0;
+
+			col.hasMe = 0;
+
+			const countData = rawData.find(m => m.campaign_option_id === col.id);
+
+			if (countData) {
+
+				col.voteCount = countData.count;
+
+				col.hasMe = +countData.has_me;
 			}
 		});
 

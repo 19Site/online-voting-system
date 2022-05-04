@@ -2,6 +2,10 @@ import { Injectable } from '@nestjs/common';
 
 import { User } from '../users/entities/user.entity';
 
+import { CampaignOption } from '../campaign-options/entities/campaign-option.entity';
+
+import { UserCampaignOption } from '../users/entities/user-campaign-option.entity';
+
 import { ConfigService } from '@nestjs/config';
 
 import * as Crypto from 'crypto';
@@ -72,5 +76,37 @@ export class ActionsService {
 
             refreshToken: refreshToken
         };
+    }
+
+    /**
+     * do vote
+     */
+    async doVote(token: string, optionId: number): Promise<boolean> {
+
+        // get token data
+        const tokenJson = Jwt.verify(token.replace(/^Bearer /, ''), this.configService.get<string>('JWT_SECRET'));
+
+        // user id
+        const { id } = tokenJson as any;
+
+        const campaignOption: CampaignOption = await CampaignOption.findOne({
+
+            where: {
+
+                id: optionId
+            }
+        });
+
+        const u = new UserCampaignOption();
+
+        u.campaign_id = campaignOption.campaign_id;
+
+        u.user_id = id;
+
+        u.campaign_option_id = campaignOption.id;
+
+        await u.save();
+
+        return true;
     }
 }
