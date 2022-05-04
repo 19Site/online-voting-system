@@ -4,13 +4,27 @@ import Image from 'next/image';
 
 import Link from 'next/link';
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useReducer, useState } from 'react';
 
 import Axios from 'axios';
 
 import Moment from 'moment';
 
+import Swal from 'sweetalert2';
+
+import Qs from 'qs';
+
+import { Context } from '../../context/context';
+
+import { useRouter } from 'next/router';
+
 export default function Page() {
+
+	// R
+	const R = useContext(Context);
+
+	// router
+	const router = useRouter();
 
 	// campaigns
 	const [campaigns, setCampaigns] = useState([]);
@@ -18,9 +32,28 @@ export default function Page() {
 	// component did mount
 	useEffect(() => {
 
+		// router not ready
+		if (!router.isReady) {
+
+			return;
+		}
+
+		// no session
+		if (!R.session.userId) {
+
+			// exit
+			router.replace({
+
+				pathname: '/login'
+			});
+
+			// exit
+			return;
+		}
+
 		// load data
 		load();
-	}, []);
+	}, [router.isReady]);
 
 	/**
 	 * load
@@ -28,7 +61,40 @@ export default function Page() {
 	const load = async () => {
 
 		// get campaigns
-		const res = await Axios.get('/api/v1/campaigns');
+		const res = await Axios.get('/api/v1/campaigns?' + Qs.stringify({
+
+			votable: 1
+		}));
+
+		// data
+		const data = res.data;
+
+		// error
+		if (!data.ok) {
+
+			return;
+		}
+
+		// get campaigns
+		const campaigns = data.data;
+
+		// update campaigns
+		setCampaigns(campaigns);
+	};
+
+	/**
+	 * do vote
+	 */
+	const doVote = async (optionId) => {
+
+		// user id
+		const { userId } = R.session;
+
+		// get campaigns
+		const res = await Axios.get('/api/v1/actions/do-vote?' + Qs.stringify({
+
+			votable: 1
+		}));
 
 		// data
 		const data = res.data;
@@ -112,9 +178,25 @@ export default function Page() {
 
 													<div key={'campaign-index-' + i + '-options-' + i2}>
 
-														<div className='ms-4 mt-1'>
+														<div className='ms-4 mt-2'>
 
-															{i2 + 1}. {option.name}
+															<div>
+
+																<button
+
+																	className='btn btn-primary btn-sm'
+
+																	onClick={evt => doVote(option.id)}
+																>
+
+																	Vote this
+																</button>
+
+																<span className='ms-3'>
+
+																	{i2 + 1}. {option.name}
+																</span>
+															</div>
 														</div>
 													</div>
 												);

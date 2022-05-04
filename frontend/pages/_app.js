@@ -3,15 +3,29 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 import Head from 'next/head';
 
-import Layout from '../components/layout';
+import React, { useState, useContext } from 'react';
 
+import { Context } from '../context/context';
+
+// my app
 function MyApp({ Component, pageProps }) {
 
+	// session
+	const [session, setSession] = useState({
+
+		userId: undefined
+	});
+
+	// get layout
 	const getLayout = Component.getLayout || ((page) => page);
 
+	// render
 	return getLayout(
 
-		<>
+		<Context.Provider
+
+			value={{ session, setSession }}
+		>
 
 			<Head>
 
@@ -25,7 +39,7 @@ function MyApp({ Component, pageProps }) {
 			</Head>
 
 			<Component {...pageProps} />
-		</>
+		</Context.Provider>
 	);
 }
 

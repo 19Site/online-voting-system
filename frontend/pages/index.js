@@ -23,14 +23,13 @@ export default function Page() {
 
 		router.replace({
 
-			pathname: '/campaigns'
+			pathname: '/login'
 		});
 	}, [router.isReady]);
 
 	// render
 	return (
 
-		<div className='container'>
-		</div>
+		<></>
 	);
 }
