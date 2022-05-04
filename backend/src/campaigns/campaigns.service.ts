@@ -8,6 +8,8 @@ import { UpdateCampaignDto } from './dto/update-campaign.dto';
 
 import { Campaign } from './entities/campaign.entity';
 
+import { CampaignOption } from '../campaign-options/entities/campaign-option.entity';
+
 @Injectable()
 export class CampaignsService {
 
@@ -60,9 +62,18 @@ export class CampaignsService {
 				id: id,
 
 				deletedAt: IsNull()
-			},
+			}
+		});
 
-			relations: ['campaignOptions']
+		// get campaign options
+		campaign.campaignOptions = await CampaignOption.find({
+
+			where: {
+
+				campaign_id: campaign.id,
+
+				deletedAt: IsNull()
+			}
 		});
 
 		return campaign;
