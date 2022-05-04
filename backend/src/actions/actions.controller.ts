@@ -18,13 +18,13 @@ export class ActionsController {
     @UsePipes(new ValidationPipe({ transform: true }))
     async doLogin(@Body() dto: DoLoginDto): Promise<object> {
 
-        const user: User = await this.actionsService.doLogin(dto.hkid);
+        const tokens: object = await this.actionsService.doLogin(dto.hkid);
 
         return {
 
             ok: true,
 
-            user: user
+            ...tokens
         };
     }
 }
