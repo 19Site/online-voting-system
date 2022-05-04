@@ -78,7 +78,7 @@ docker exec -it ovs-mysql-container mysql -ppassword -e "create database if not 
 docker rm -f node-app
 
 # build docker container
-docker run --net ovs-net -itd --ip 172.11.0.3 -p 53080:53080 --name node-app -v $CURRENT_PARENT_PATH:$CURRENT_PARENT_PATH node:16-bullseye
+docker run --net ovs-net -itd --ip 172.11.0.3 -p 53080:53080 -p 53081:3000 --name node-app -v $CURRENT_PARENT_PATH:$CURRENT_PARENT_PATH node:16-bullseye
 
 # start backend install
 docker exec -it -w $CURRENT_PARENT_PATH/backend node-app npm install
