@@ -60,7 +60,9 @@ export class CampaignsService {
 				id: id,
 
 				deletedAt: IsNull()
-			}
+			},
+
+			relations: ['campaignOptions']
 		});
 
 		return campaign;
